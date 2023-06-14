@@ -11,4 +11,15 @@ public class RewriteRequestServiceImpl implements RewriteRequestService {
         System.out.println(newRequest);
         return newRequest;
     }
+
+    @Override
+    public String backToReadForm(String request, String valute) {
+        request = request.replaceAll("\\.", ",");
+        if (valute.equals("$")) {
+            request = "$" + request;
+        } else if (valute.equals("p")) {
+            request = request + "p";
+        }
+        return request;
+    }
 }

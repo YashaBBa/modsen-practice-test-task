@@ -10,8 +10,10 @@ public class Main {
 
         System.out.println("Input: ");
         //String request = scanner.nextLine();
-        String request = "toRubles($5,2 + $2,1)+toRubles($5,2 + $2,1)";
+      //  String request = "toRubles($5,2 + $2,1)+toRubles($5,2 + $2,1)";
         // String request = "(($5,2 + 2,1)";
+       // String request = "toRubles($5,2 + $2,1 + $5)";
+        String request = "($5,2 + $2,1 + $5)";
         System.out.println(converterService.convert(request));
 
 
