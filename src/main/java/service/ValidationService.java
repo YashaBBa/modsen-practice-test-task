@@ -8,4 +8,9 @@ public interface ValidationService {
     boolean checkIsItDollarValue(String value);
 
     boolean checkIsItRubValue(String value);
+
+    boolean checkIsValuteSameInAllOperation(String operation);
+    boolean checkIsValuteSameInAllOperation(String operation, String valute);
+
+    String getDefoltValidValute(String request);
 }

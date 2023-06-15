@@ -10,33 +10,35 @@ public class CalculatingServiceImpl implements CalculatingService {
     @Override
     public String calculateBrackestOnly(String request) {
         String[] calculateString = request.split(" ");
-        String value = "$";
+        String value = validationService.getDefoltValidValute(request);
         boolean valid = false;
+        boolean sameValuteValid = false;
         for (int i = 0; i < calculateString.length; i++) {
 
             if (calculateString[i].equals("toRubles")) {
                 value = "$";
                 continue;
             } else if (calculateString[i].equals("toDollars")) {
-                value = "p";
+                value = "р";
                 continue;
             } else if (calculateString[i].isEmpty()) continue;
             valid = validationService.checkValueValid(value, calculateString[i]);
+            sameValuteValid = validationService.checkIsValuteSameInAllOperation(calculateString[i], value);
             System.out.println(valid);
-            if (valid) {
-                calculateString[i] = calculateArifmetic(calculateString[i]);
+            if (valid && sameValuteValid) {
+                calculateString[i] = value + " " + calculateArifmetic(calculateString[i]);
             }
 
 
         }
-        return value + " " + String.join(" ", calculateString);
+        return String.join(" ", calculateString);
     }
 
     public String calculateArifmetic(String arifmetic) {
         if (arifmetic.startsWith("(") && arifmetic.endsWith(")")) {
             arifmetic = arifmetic.substring(1, arifmetic.length() - 1);
         }
-        String[] stringOfNumbers = arifmetic.replaceAll("[$p]", "")
+        String[] stringOfNumbers = arifmetic.replaceAll("[$р]", "")
                 .replaceAll(",", ".")
                 .split("[+-]");
 

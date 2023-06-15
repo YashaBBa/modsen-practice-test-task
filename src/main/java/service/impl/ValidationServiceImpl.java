@@ -14,11 +14,13 @@ public class ValidationServiceImpl implements ValidationService {
     @Override
     public boolean checkBrackestValid(String request) {
         String[] onlyBrackestString = request.replaceAll("[^()]", "").split("");
+
         Stack<String> brackestStack = new Stack<>();
+
         for (int i = 0; i < onlyBrackestString.length; i++) {
             if (onlyBrackestString[i].equals("(")) {
                 brackestStack.push(onlyBrackestString[i]);
-            } else {
+            } else if (onlyBrackestString[i].equals(")")) {
                 brackestStack.pop();
             }
         }
@@ -40,7 +42,7 @@ public class ValidationServiceImpl implements ValidationService {
                 continue;
             if (value.equals("$")) {
                 result = checkIsItDollarValue(specialString[i]);
-            } else if (s.equals("p")) {
+            } else if (value.equals("р")) {
                 result = checkIsItRubValue(specialString[i]);
             }
             if (!result) {
@@ -69,6 +71,40 @@ public class ValidationServiceImpl implements ValidationService {
             return true;
         else
             return false;
+    }
+
+    @Override
+    public boolean checkIsValuteSameInAllOperation(String operation) {
+        String onlyValuteString = operation.replaceAll("[^р$]", "");
+        if (onlyValuteString.contains("р") && onlyValuteString.contains("$")) {
+            //НАПИСАТЬ ИСКЛЮЧЕНИЕ
+            System.err.println("Нельзя работать с разнаыми валютами: " + operation);
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    @Override
+    public boolean checkIsValuteSameInAllOperation(String operation, String valute) {
+        String onlyValuteString = operation.replaceAll("[^р$]", "");
+        onlyValuteString = onlyValuteString.replace(valute, "");
+        if (!onlyValuteString.isEmpty()) {
+            //НАПИСАТЬ ИСКЛЮЧЕНИЕ
+            System.err.println("Нельзя работать с разнаыми валютами: " + operation);
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    @Override
+    public String getDefoltValidValute(String request) {
+        return request.replaceAll("[^р$]", "").split("")[0];
+
+
     }
 
 

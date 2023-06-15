@@ -1,7 +1,7 @@
 package enums;
 
 public enum ValuteValueEnum {
-    toDollar("$"),
+    toDollars("$"),
     toRubles("p");
 
     private String valute;

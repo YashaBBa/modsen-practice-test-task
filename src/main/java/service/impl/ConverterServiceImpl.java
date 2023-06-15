@@ -29,6 +29,7 @@ public class ConverterServiceImpl implements ConverterService {
 
         double exchangeRate = 1;
         String valute = "?";
+        boolean commandActive = false;
 
 
         for (int i = 0; i < calculateString.length; i++) {
@@ -38,11 +39,15 @@ public class ConverterServiceImpl implements ConverterService {
                 exchangeRate = readeFromFileService.getExchangeRate(calculateString[i]);
                 valute = ValuteValueEnum.valueOf(calculateString[i]).getValute();
                 calculateString[i] = "";
+                commandActive = true;
                 continue;
-            } else if (calculateString[i].equals("$") || calculateString[i].equals("p")) {
+            } else if ((calculateString[i].equals("$") || calculateString[i].equals("р")) && commandActive == false) {
                 valute = calculateString[i];
                 calculateString[i] = "";
-            } else {
+
+            } else if((calculateString[i].equals("$") || calculateString[i].equals("р")) && commandActive == true){
+                calculateString[i] = "";
+            }else {
                 double result = Double.parseDouble(calculateString[i]) * exchangeRate;
                 // calculateString[i] = Double.toString(Double.parseDouble(calculateString[i]) * exchangeRate);
                 calculateString[i] = new DecimalFormat("0.00").format(result);
