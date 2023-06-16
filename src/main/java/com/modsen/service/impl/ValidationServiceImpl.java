@@ -1,18 +1,23 @@
-package service.impl;
+package com.modsen.service.impl;
 
-import service.ValidationService;
+import com.modsen.service.ValidationService;
 
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidationServiceImpl implements ValidationService {
+
+    private final String INCORRECT_CURRENCY_ENTRY = "Incorrect currency entry: ";
+    private final String CURRENCY_TYPE_SHOULD_BE_SAME = "Currency type should be same: ";
+    private final String INCORRECT_USING_OF_BRACKETS = "Incorrect using of brackets";
+
     private final Pattern dollarPattern = Pattern.compile("\\$-?\\d+(,\\d+)?");
     private final Pattern rubPattern = Pattern.compile("-?\\d+(,\\d+)?р");
 
 
     @Override
-    public boolean checkBrackestValid(String request) {
+    public boolean checkBrackestValid(String request) throws ServiceException {
         String[] onlyBrackestString = request.replaceAll("[^()]", "").split("");
 
         Stack<String> brackestStack = new Stack<>();
@@ -27,7 +32,7 @@ public class ValidationServiceImpl implements ValidationService {
         if (brackestStack.isEmpty()) {
             return true;
         } else {
-            return false;
+            throw new ServiceException(INCORRECT_USING_OF_BRACKETS);
         }
 
     }
@@ -41,9 +46,19 @@ public class ValidationServiceImpl implements ValidationService {
             if (specialString[i].isEmpty())
                 continue;
             if (value.equals("$")) {
-                result = checkIsItDollarValue(specialString[i]);
+                try {
+                    result = checkIsItDollarValue(specialString[i]);
+                } catch (ServiceException e) {
+                    System.out.println(e.getMessage());
+                    //e.printStackTrace();
+                }
             } else if (value.equals("р")) {
-                result = checkIsItRubValue(specialString[i]);
+                try {
+                    result = checkIsItRubValue(specialString[i]);
+                } catch (ServiceException e) {
+                    System.out.println(e.getMessage());
+                  //  e.printStackTrace();
+                }
             }
             if (!result) {
                 return result;
@@ -56,30 +71,29 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean checkIsItDollarValue(String value) {
+    public boolean checkIsItDollarValue(String value) throws ServiceException {
         Matcher matcher = dollarPattern.matcher(value);
         if (matcher.matches())
             return true;
         else
-            return false;
+            throw new ServiceException(INCORRECT_CURRENCY_ENTRY + value);
     }
 
     @Override
-    public boolean checkIsItRubValue(String value) {
+    public boolean checkIsItRubValue(String value) throws ServiceException {
         Matcher matcher = rubPattern.matcher(value);
         if (matcher.matches())
             return true;
         else
-            return false;
+            throw new ServiceException(INCORRECT_CURRENCY_ENTRY + value);
+
     }
 
     @Override
-    public boolean checkIsValuteSameInAllOperation(String operation) {
+    public boolean checkIsValuteSameInAllOperation(String operation) throws ServiceException {
         String onlyValuteString = operation.replaceAll("[^р$]", "");
         if (onlyValuteString.contains("р") && onlyValuteString.contains("$")) {
-            //НАПИСАТЬ ИСКЛЮЧЕНИЕ
-            System.err.println("Нельзя работать с разнаыми валютами: " + operation);
-            return false;
+            throw new ServiceException(CURRENCY_TYPE_SHOULD_BE_SAME + operation);
         } else {
             return true;
         }
@@ -87,16 +101,15 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean checkIsValuteSameInAllOperation(String operation, String valute) {
+    public boolean checkIsValuteSameInAllOperation(String operation, String valute) throws ServiceException {
         String onlyValuteString = operation.replaceAll("[^р$]", "");
         onlyValuteString = onlyValuteString.replace(valute, "");
         if (!onlyValuteString.isEmpty()) {
-            //НАПИСАТЬ ИСКЛЮЧЕНИЕ
-            System.err.println("Нельзя работать с разнаыми валютами: " + operation);
-            return false;
+            throw new ServiceException(CURRENCY_TYPE_SHOULD_BE_SAME + operation);
         } else {
             return true;
         }
+
 
     }
 

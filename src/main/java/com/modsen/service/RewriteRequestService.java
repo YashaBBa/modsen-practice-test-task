@@ -1,4 +1,4 @@
-package service;
+package com.modsen.service;
 
 public interface RewriteRequestService {
     String rewriteRequestForOnlyArithmetic(String request);
