@@ -1,5 +1,6 @@
 package com.modsen.service.impl;
 
+import com.modsen.enums.ValuteValueEnum;
 import com.modsen.service.ValidationService;
 
 import java.util.Stack;
@@ -8,6 +9,8 @@ import java.util.regex.Pattern;
 
 public class ValidationServiceImpl implements ValidationService {
 
+    public static final String PATTERN_ALL_EXCEPT_BRACKETS = "[^()]";
+    private final String PATTERN_ALL_EXCEPT_P_AND_$ = "[^р$]";
     private final String INCORRECT_CURRENCY_ENTRY = "Incorrect currency entry: ";
     private final String CURRENCY_TYPE_SHOULD_BE_SAME = "Currency type should be same: ";
     private final String INCORRECT_USING_OF_BRACKETS = "Incorrect using of brackets";
@@ -18,7 +21,7 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean checkBrackestValid(String request) throws ServiceException {
-        String[] onlyBrackestString = request.replaceAll("[^()]", "").split("");
+        String[] onlyBrackestString = request.replaceAll(PATTERN_ALL_EXCEPT_BRACKETS, "").split("");
 
         Stack<String> brackestStack = new Stack<>();
 
@@ -45,28 +48,24 @@ public class ValidationServiceImpl implements ValidationService {
         for (int i = 0; i < specialString.length; i++) {
             if (specialString[i].isEmpty())
                 continue;
-            if (value.equals("$")) {
+            if (value.equals(ValuteValueEnum.toDollars.getValute())) {
                 try {
                     result = checkIsItDollarValue(specialString[i]);
                 } catch (ServiceException e) {
                     System.out.println(e.getMessage());
-                    //e.printStackTrace();
+
                 }
-            } else if (value.equals("р")) {
+            } else if (value.equals(ValuteValueEnum.toRubles.getValute())) {
                 try {
                     result = checkIsItRubValue(specialString[i]);
                 } catch (ServiceException e) {
                     System.out.println(e.getMessage());
-                  //  e.printStackTrace();
                 }
             }
             if (!result) {
                 return result;
             }
-
         }
-
-
         return true;
     }
 
@@ -91,8 +90,8 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean checkIsValuteSameInAllOperation(String operation) throws ServiceException {
-        String onlyValuteString = operation.replaceAll("[^р$]", "");
-        if (onlyValuteString.contains("р") && onlyValuteString.contains("$")) {
+        String onlyValuteString = operation.replaceAll(PATTERN_ALL_EXCEPT_P_AND_$, "");
+        if (onlyValuteString.contains(ValuteValueEnum.toRubles.getValute()) && onlyValuteString.contains(ValuteValueEnum.toDollars.getValute())) {
             throw new ServiceException(CURRENCY_TYPE_SHOULD_BE_SAME + operation);
         } else {
             return true;
@@ -102,22 +101,18 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Override
     public boolean checkIsValuteSameInAllOperation(String operation, String valute) throws ServiceException {
-        String onlyValuteString = operation.replaceAll("[^р$]", "");
+        String onlyValuteString = operation.replaceAll(PATTERN_ALL_EXCEPT_P_AND_$, "");
         onlyValuteString = onlyValuteString.replace(valute, "");
         if (!onlyValuteString.isEmpty()) {
             throw new ServiceException(CURRENCY_TYPE_SHOULD_BE_SAME + operation);
         } else {
             return true;
         }
-
-
     }
 
     @Override
     public String getDefoltValidValute(String request) {
-        return request.replaceAll("[^р$]", "").split("")[0];
-
-
+        return request.replaceAll(PATTERN_ALL_EXCEPT_P_AND_$, "").split("")[0];
     }
 
 

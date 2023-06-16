@@ -1,5 +1,6 @@
 package com.modsen.service.impl;
 
+import com.modsen.enums.ValuteValueEnum;
 import com.modsen.service.RewriteRequestService;
 
 public class RewriteRequestServiceImpl implements RewriteRequestService {
@@ -18,16 +19,16 @@ public class RewriteRequestServiceImpl implements RewriteRequestService {
     @Override
     public String backToReadForm(String request, String valute) {
         request = request.replaceAll("\\.", ",");
-        if (valute.equals("$")) {
-            request = "$" + request;
-        } else if (valute.equals("р")) {
-            request = request + "р";
+        if (valute.equals(ValuteValueEnum.toDollars.getValute())) {
+            request = ValuteValueEnum.toDollars.getValute() + request;
+        } else if (valute.equals(ValuteValueEnum.toRubles.getValute())) {
+            request = request + ValuteValueEnum.toRubles.getValute();
         }
         if (request.contains("-")) {
-            if(valute.equals("$"))
-            request = request.replace("-"," - $" );
-            else if(valute.equals("р")){
-                request=request.replace("-","р - ");
+            if (valute.equals(ValuteValueEnum.toDollars.getValute()))
+                request = request.replace("-", " - " + ValuteValueEnum.toDollars.getValute());
+            else if (valute.equals(ValuteValueEnum.toRubles.getValute())) {
+                request = request.replace("-", ValuteValueEnum.toRubles.getValute() + " - ");
 
             }
 

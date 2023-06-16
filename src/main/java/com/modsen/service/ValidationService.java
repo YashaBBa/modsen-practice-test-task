@@ -12,6 +12,7 @@ public interface ValidationService {
     boolean checkIsItRubValue(String value) throws ServiceException;
 
     boolean checkIsValuteSameInAllOperation(String operation) throws ServiceException;
+
     boolean checkIsValuteSameInAllOperation(String operation, String valute) throws ServiceException;
 
     String getDefoltValidValute(String request);

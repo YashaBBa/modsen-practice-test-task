@@ -36,7 +36,7 @@ public class CalculatingServiceImpl implements CalculatingService {
             if (valid && sameValuteValid) {
                 String arifmeticResult = calculateArifmetic(calculateString[i]);
                 if (arifmeticResult.contains("-")) {
-                    calculateString[i] = value + " 0 - " + value + " " + arifmeticResult.replace("-","");
+                    calculateString[i] = value + " 0 - " + value + " " + arifmeticResult.replace("-", "");
                 } else
                     calculateString[i] = value + " " + calculateArifmetic(calculateString[i]);
             }

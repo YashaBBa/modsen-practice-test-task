@@ -3,10 +3,11 @@ package com.modsen.service.impl;
 import com.modsen.enums.ValuteValueEnum;
 import com.modsen.service.*;
 
-
 import java.text.DecimalFormat;
 
 public class ConverterServiceImpl implements ConverterService {
+
+    private final String ROUND = "0.00";
 
     ValidationService validationService = new ValidationServiceImpl();
     RewriteRequestService rewriteRequestService = new RewriteRequestServiceImpl();
@@ -16,6 +17,7 @@ public class ConverterServiceImpl implements ConverterService {
 
     @Override
     public String convert(String request) {
+
         try {
             validationService.checkBrackestValid(request);
         } catch (ServiceException e) {
@@ -49,16 +51,16 @@ public class ConverterServiceImpl implements ConverterService {
                 calculateString[i] = "";
                 commandActive = true;
                 continue;
-            } else if ((calculateString[i].equals("$") || calculateString[i].equals("р")) && commandActive == false) {
+            } else if ((calculateString[i].equals(ValuteValueEnum.toRubles.getValute()) || calculateString[i].equals(ValuteValueEnum.toDollars.getValute())) && commandActive == false) {
                 valute = calculateString[i];
                 calculateString[i] = "";
 
-            } else if ((calculateString[i].equals("$") || calculateString[i].equals("р")) && commandActive == true) {
+            } else if ((calculateString[i].equals(ValuteValueEnum.toRubles.getValute()) || calculateString[i].equals(ValuteValueEnum.toDollars.getValute())) && commandActive == true) {
                 calculateString[i] = "";
             } else {
                 double result = Double.parseDouble(calculateString[i]) * exchangeRate;
 
-                calculateString[i] = new DecimalFormat("0.00").format(result);
+                calculateString[i] = new DecimalFormat(ROUND).format(result);
             }
 
 
